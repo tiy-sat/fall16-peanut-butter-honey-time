@@ -5,3 +5,43 @@
 .valid input {
   border-color: green;
 }
+
+.nav__currentUser {
+  color: rgb(245, 245, 245);
+  display: inline-block;
+  position: absolute;
+  top: 1.5rem;
+  right: 9rem;
+}
+
+.nav__currentUserImage {
+  border: transparent;
+  border-radius: 50%;
+  position: absolute;
+  top: 1rem;
+  right: 6.5rem;
+  width: 2rem;
+}
+
+.nav__signIn, .nav__signOut {
+    background-color: rgb(231, 76, 60);
+    border-radius: 0.4rem;
+    color: rgb(245, 245, 245);
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    transition: color 0.6s, background-color 0.6s;
+}
+
+.nav__signIn:hover, .nav__signOut:hover {
+    background-color: rgb(245, 245, 245);
+    color: rgb(231, 76, 60);
+    cursor: pointer;
+    transition: color 0.6s, background-color 0.6s;
+}
+
+.nav__signOut--hide {
+  display: none;
+}
