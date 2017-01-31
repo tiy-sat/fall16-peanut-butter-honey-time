@@ -1,7 +1,7 @@
 {
-  "name": "boilerplate-jasmine",
+  "name": "peanut-butter-honey-time",
   "version": "1.0.0",
-  "description": "",
+  "description": "Peanut butter honey sammich recipe app",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
