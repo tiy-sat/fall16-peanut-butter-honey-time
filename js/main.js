@@ -12,29 +12,28 @@ export default React.createClass({
           signOutButton.className = "nav__signOut";
         }
         var currentUser = {};
+        var today = new Date();
 
         currentUser["/users/" + user.uid] = {
           email: user.email,
           name: user.displayName,
-          picture: user.photoURL
+          picture: user.photoURL,
+          lastLogin: today
         }
 
-        //FIXME: Don't do this until we get data back from DB
-        this.setState({
-          currentName: user.email,
-          name: user.displayName,
-          picture: user.photoURL
-        })
+        firebase.database().ref().update(currentUser)
 
-//      firebase.database().ref().update(currentUser)
-//      firebase.database().ref("/users/" + user.uid).once("value").then((snapshot) => {
-//        var snapshotReturn = snapshot.val()
-      //   this.setState({
-      //     currentName: snapshotReturn.email,
-      //     name: user.displayName,
-      //     picture: user.photoURL
-      //   })
-      // })
+        // This sets up a callback once firebase reports that /users/{user.uid} has a value
+        firebase.database().ref("/users/" + user.uid).once("value").then((snapshot) => {
+          var snapshotReturn = snapshot.val()
+          // FIXME: Understand why we are using snapshotReturn.email but user.displayName
+          this.setState({
+            currentName: snapshotReturn.email,
+            name: user.displayName,
+            picture: user.photoURL,
+            lastLogin: snapshotReturn.lastLogin
+          });
+        });
     }
     else { // signed out or something went wrong
       var signOutButton = document.querySelector("[data-js='nav__signOut']")
