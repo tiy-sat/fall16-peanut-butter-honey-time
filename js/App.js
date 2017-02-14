@@ -2,6 +2,8 @@ import React from 'react'
 import { Link } from 'react-router'
 import Header from './Header'
 import Footer from './Footer'
+import { fbSignInWithRedirect, fbSetupSignoutCallback, fbOnAuthStateChanged,
+  fbUpdateUser, fbWhenUserUpdated} from './fbAuth'
 
 export default React.createClass({
   getInitialState() {
@@ -21,9 +23,7 @@ export default React.createClass({
     }
   },
   componentDidMount() {
-    this.setState({provider: new firebase.auth.GoogleAuthProvider()});
-
-    firebase.auth().onAuthStateChanged((authUser) => {
+    fbOnAuthStateChanged((authUser) => {
       if (authUser) { // Signed in successfully
         var signOutButton = document.querySelector("[data-js='nav__signOut']")
         if (signOutButton.className == "nav__signOut--hide") {
@@ -39,10 +39,10 @@ export default React.createClass({
           lastLogin: today
         }
 
-        firebase.database().ref().update(currentUser)
+        fbUpdateUser(currentUser)
 
+        fbWhenUserUpdated(authUser.uid, (snapshot) => {
         // This sets up a callback once firebase reports that /users/{user.uid} has a value
-        firebase.database().ref("/users/" + authUser.uid).once("value").then((snapshot) => {
           var snapshotReturn = snapshot.val()
           this.setState({
             user: {
@@ -56,32 +56,16 @@ export default React.createClass({
         });
     }
     else { // signed out or something went wrong
-      var signOutButton = document.querySelector("[data-js='nav__signOut']")
-      if(signOutButton.className == "nav__signOut"){
-        signOutButton.className = "nav__signOut--hide"
-      }
+      console.log("LOGGED OUT")
     }
   })
 
   },
   signUserIn() {
-    firebase.auth().signInWithRedirect(this.state.provider);
-    firebase.auth().getRedirectResult().then((result) => {
-      if(result.credential) {
-        var token = result.credential.accessToken;
-      }
-
-    }).catch((error) => {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      var email = error.email;
-      var credential = error.credential;
-      console.log("ERROR authenticating with firebase: " + errorMessage);
-      //FIXME: Better logging/error handling
-    });
+    fbSignInWithRedirect()
   },
   signUserOut() {
-    firebase.auth().signOut().then(() => {
+    fbSetupSignoutCallback(() => {
       //FIXME: Don't repeat myself from getInitialState()
       this.setState({
         user: {
