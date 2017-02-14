@@ -11,7 +11,7 @@ export default React.createClass({
     return (
       <header>
         <div>
-          <img className="nav__currentUserImage" src={this.props.user.picture} />
+          <img ref="userImage" className="nav__currentUserImage" src={this.props.user.picture} />
 
           <button className="nav__signIn"
               onClick={this.props.signUserIn}
